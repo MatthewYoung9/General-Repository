@@ -1,6 +1,8 @@
 import datetime as dt
 import random 
 
+# Bugs: alloacation doesn't necessarily match weights. error = +/ 1 timeslot
+
 def summit(my_list):
     # returns the sum of items in a list
     ans = 0 
