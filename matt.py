@@ -79,4 +79,3 @@ def rolling_ave(my_list,r):
         rolling[i] = mean( [my_list[i+j] for j in range(r)  ])
     return rolling
 
-print(rolling_ave([1,2,3,4,5],3))
