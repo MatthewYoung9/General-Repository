@@ -21,11 +21,25 @@ def sumData(my_list):
         answer += i
     return answer
 
-def onlyint(my_list):
+def onlyType(my_list, the_type):
+    # returns the data in a list of a given type. input type as a string
     dummy = []
-    for elem in my_list:
-        if type(elem) == int:
-            dummy.append(elem)
+    if the_type == "int":
+         for elem in my_list:
+            if type(elem) == int:
+                dummy.append(elem)
+    elif the_type == "str":
+         for elem in my_list:
+            if type(elem) == str:
+                dummy.append(elem)
+    elif the_type == "bool":
+         for elem in my_list:
+            if type(elem) == bool:
+                dummy.append(elem)
+    elif the_type == "float":
+         for elem in my_list:
+            if type(elem) == float:
+                dummy.append(elem)
     return dummy
 
 def reverse(my_list):
