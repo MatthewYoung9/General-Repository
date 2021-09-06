@@ -1,7 +1,9 @@
 import numpy as np
 # handy functions
+
 def find_index(my_list, my_item):
-    # returns the indices at which the list has a particular value
+    
+    # returns the indices at which the list has a particular value but can be replaced by the index() method. 
     indices = []
     for i in range(len(my_list)):
         if my_list[i] == my_item:
@@ -15,7 +17,7 @@ def sumIndexMultData(my_list):
     return answer
 
 def sumData(my_list):
-    #sums the data in a list
+    #sums the data in a list. not needed: in-built sum() function
     answer = 0
     for i in my_list:
         answer += i
@@ -42,7 +44,7 @@ def onlyType(my_list, the_type):
                 dummy.append(elem)
     return dummy
 
-def reverse(my_list):
+def reversed(my_list):
     Reverse = [ my_list[-i-1] for i in range(len(my_list))]
     return Reverse
 
@@ -50,7 +52,7 @@ def reverse(my_list):
 # stats functions
 
 def linReg(x_data, y_data):
-    # returns linear regression coefficients [alpha, beta]
+    # returns linear regression coefficients [alpha, beta]. 
     n = len(x_data)
     A = np.zeros((n,2))
     for i in range(n):
