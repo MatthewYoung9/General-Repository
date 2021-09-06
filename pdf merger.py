@@ -2,9 +2,10 @@
 
 
 #Improvements include: 
-# enter number of docs and then have fileN, fileNpage,... be auto generated
+# enter number of docs and then have fileN, fileNpage,... be auto generated (use dictionaries) 
 # the only thing you'd then have to do to the doc would be to import the location, the number of docs and the page numbers.
 # This could then be dev'd into an app with tkinter or similar. 
+# 
 import PyPDF2 as p
 
 
