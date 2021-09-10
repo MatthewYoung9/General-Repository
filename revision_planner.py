@@ -1,5 +1,6 @@
 import datetime as dt
 import random 
+import math
 
 # Bugs: alloacation doesn't necessarily match weights. error = +/ 1 timeslot
 
