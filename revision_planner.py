@@ -101,7 +101,6 @@ for i in range(len(modules)):
         timespan[time] = module
         empty_spots.remove(time)
 
-print(timespan)
 
 # Displaying timetable in a nice way
 
