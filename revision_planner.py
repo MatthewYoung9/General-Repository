@@ -1,15 +1,7 @@
 import datetime as dt
-import random 
+from random import sample
 import math
 
-# Bugs: alloacation doesn't necessarily match weights. error = +/ 1 timeslot
-
-def summit(my_list):
-    # returns the sum of items in a list
-    ans = 0 
-    for i in my_list:
-        ans += i
-    return ans
 def allocate(the_thing, the_list, the_index):
     # 
     dummy_1 = the_list[:the_index]
@@ -17,13 +9,8 @@ def allocate(the_thing, the_list, the_index):
     return dummy_1 + [the_thing] +dummy_2
 
 def upto(my_list, element):
-    for i in range(len(my_list)):
-        if my_list[i] == element:
-            crit = i-1
-            pass
-        pass
-    new_list = [my_list[i] for i in range(crit) ]
-    return new_list
+    critical_point = my_list.index(element)
+    return my_list[:critical_point]
 
 def onlyint(my_list):
     dummy = []
@@ -33,39 +20,37 @@ def onlyint(my_list):
     return dummy
 
 
-
 # Set year
 y = 2021
 # Here list all the names of the modules for which you have exams
-modules = ["Num", "Biomath", "Ecology", "Decision", "Finance", "German", "Japanese"]
+modules = ["Spanish", "German", "AMMT","Stats", "Project","Free"]
 
 
 # Then list the dates that you have these exams on 
 
-nm = dt.date(y, 4, 26)
-bm = dt.date(y ,5, 5)
-ec = dt.date(y, 5, 20)
-dr = dt.date(y, 4, 29)
-fi = dt.date(y, 5, 13)
-ge = dt.date(y, 5, 18)
-ja = dt.date(y, 5, 11) 
+sp = dt.date(y, 12, 17)
+ge = dt.date(y ,12, 18)
+ammt = dt.date(y, 12, 19)
+stat = dt.date(y, 12, 20)
+proj = dt.date(y, 12, 21)
+free = dt.date(y,12,22)
 
-dates = [nm, bm, ec, dr, fi, ge, ja]
 
+dates = [sp,ge,ammt,stat,proj,free]
 
 # Now give weights. 
 # If I spent t_1 hours on module 1
 # I want to spend t_2 hours on subject 2 etc.
 
-weights = [20,15,14,15,15,5,8]
-weightSum = summit(weights)
+weights = [10,15,30,30,40,15]
+weight_sum = sum(weights)
 
-# now merge all this info you've jsut put in 
+# now merge all this info you've just put in 
 
 merged = [modules, dates, weights]
 # When is the date you wish to start revising?
 
-start = dt.date(y, 4, 5 )
+start = dt.date(y, 11, 15 )
 
 # I then start the process of dividing up the schedule. I start with 
 # splitting up each day into two half days from the start day to the very last exam
@@ -74,53 +59,54 @@ start = dt.date(y, 4, 5 )
 
 frees = []
 slots = (abs(max(dates)- start).days + 1)*2
+subject_slot = [math.floor( slots*i/weight_sum  ) for i in weights]
+timespan = slots*["Empty"]
 
-timespan = [i for i in range(slots)]
+# Allcoate what you want
 
-# allocate exams
+preplanned = [("Spanish",0),("Stats",1), ("Stats",2)]
 
-for subject in range(len(modules)):
-    timespan = allocate( merged[0][subject]+ " Exam", timespan, ((abs(merged[1][subject] - start ).days) )*2    )
-    timespan = allocate( merged[0][subject]+ " Exam", timespan, ((abs(merged[1][subject] - start ).days) )*2  +1  )
-    if type(timespan[((abs(merged[1][subject] - start ).days) )*2 -1]) == int:
-        timespan[((abs(merged[1][subject] - start ).days) )*2 -1] = merged[0][subject]
-        merged[2][subject] -= 1
+for i in preplanned:
+    timespan[i[1]]= i[0]
+# Allocate exams. Note this this overrides exams that occur on the same day
 
-
-# allocate frees 
-
-for i in range(len(frees)):
-    timespan = allocate("free", timespan, frees[i])
-
-
+for i in range( len(modules)):
+    timespan[((abs(merged[1][i] - start ).days) )*2 ] = merged[0][i]+ " Exam"
+    timespan[((abs(merged[1][i] - start ).days) )*2 +1 ] = merged[0][i]+ " Exam"
     
-    
-# Number of unallocated spots
-
-unallocatedspots = len(onlyint(timespan))
-
-# Now it's time to change weights into times. 
-
-for i in range(len(modules)):
-    merged[2][i] = math.floor(merged[2][i]*unallocatedspots / weightSum )
-    
-# # This is now where the magic happens. We take the schedule and 
-# # the slots which are unallocated which lie before the exam.
-# # we then allocate the days 
 
 
-for i in range(len(modules)):
-    toAlloc = onlyint(upto(timespan, merged[0][i] + " Exam"))
-    toSet = random.choices(toAlloc, k= merged[2][i])
-    for j in toSet:
-        timespan = allocate(merged[0][i] , timespan, j)
+# Allcoate frees
 
-for i in range(len(timespan)):
-    if type(timespan[i]) == int :
-        timespan[i] = "free"
+for i in frees:
+    timespan[i] = "Free"
+
+
+# Find the unallocated spots
+
+empty_spots = []
+for i in range(slots):
+    if timespan[i]== "Empty":
+        empty_spots.append(i)
         
+subject_slot = [math.floor( len(empty_spots)*i/weight_sum  ) for i in weights]
+
+# Allocate revision slots
+
+for i in range(len(modules)):
+    module = modules[i]
+    possible_slots = [j*(j < ((abs(dates[i] - start ).days) )*2) for j in empty_spots ]
+    to_allocate = sample(possible_slots, subject_slot[i])
+    for time in to_allocate:
+        timespan[time] = module
+        empty_spots.remove(time)
+
 print(timespan)
-    
+
+# Displaying timetable in a nice way
+
+for t in range(int(slots/2)):
+    print(str (start + dt.timedelta(days=t)) + " " +str(timespan[2*t])+ " " + str(timespan[2*t+1]) )
 
 
     
